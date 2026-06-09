@@ -179,6 +179,47 @@ func (e *FrejaEndpoint) CancelSign(ctx context.Context, id string) error {
 	return e.client.delete(ctx, "/v3/freja/sign/"+id)
 }
 
+func (e *FrejaEndpoint) AgeVerification(ctx context.Context, req AgeVerificationRequest) (AgeVerificationStatus, error) {
+	var raw json.RawMessage
+	if err := e.client.post(ctx, "/v3/freja/age-verification", req, &raw); err != nil {
+		return nil, err
+	}
+	return unmarshalAgeVerificationStatus(raw)
+}
+
+func (e *FrejaEndpoint) AgeVerificationStatus(ctx context.Context, id string) (AgeVerificationStatus, error) {
+	var raw json.RawMessage
+	if err := e.client.get(ctx, "/v3/freja/age-verification/"+id, &raw); err != nil {
+		return nil, err
+	}
+	return unmarshalAgeVerificationStatus(raw)
+}
+
+func (e *FrejaEndpoint) CancelAgeVerification(ctx context.Context, id string) error {
+	return e.client.delete(ctx, "/v3/freja/age-verification/"+id)
+}
+
+func (e *FrejaEndpoint) WaitForAgeVerification(ctx context.Context, id string, opts PollOptions) (AgeVerificationStatus, error) {
+	interval := opts.Interval
+	if interval == 0 {
+		interval = 2 * time.Second
+	}
+	for {
+		status, err := e.AgeVerificationStatus(ctx, id)
+		if err != nil {
+			return nil, &WaitError{Err: err}
+		}
+		if _, ok := status.(*AgeVerificationPending); !ok {
+			return status, nil
+		}
+		select {
+		case <-ctx.Done():
+			return nil, &WaitError{Timeout: true}
+		case <-time.After(interval):
+		}
+	}
+}
+
 func (e *FrejaEndpoint) WaitForAuth(ctx context.Context, id string, opts PollOptions) (FrejaStatus, error) {
 	return pollFreja(ctx, opts, func() (FrejaStatus, error) { return e.AuthStatus(ctx, id) })
 }
