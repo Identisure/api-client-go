@@ -37,7 +37,7 @@ func (e *DocumentEndpoint) Upload(ctx context.Context, data []byte, filename str
 		return nil, &IdkollenError{Message: err.Error()}
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, e.client.baseURL+"/document", &buf)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, e.client.baseURL+"/v3/document", &buf)
 	if err != nil {
 		return nil, &IdkollenError{Message: err.Error()}
 	}
@@ -70,7 +70,7 @@ func (e *DocumentEndpoint) Upload(ctx context.Context, data []byte, filename str
 }
 
 func (e *DocumentEndpoint) Download(ctx context.Context, id string) ([]byte, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, e.client.baseURL+"/document/"+id, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, e.client.baseURL+"/v3/document/"+id, nil)
 	if err != nil {
 		return nil, &IdkollenError{Message: err.Error()}
 	}
@@ -95,8 +95,4 @@ func (e *DocumentEndpoint) Download(ctx context.Context, id string) ([]byte, err
 		return nil, &apiErr
 	}
 	return body, nil
-}
-
-func (e *DocumentEndpoint) Delete(ctx context.Context, id string) error {
-	return e.client.delete(ctx, "/document/"+id)
 }

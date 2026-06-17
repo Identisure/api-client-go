@@ -13,7 +13,7 @@ import (
 
 func TestDocumentUpload(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost || r.URL.Path != "/document" {
+		if r.Method != http.MethodPost || r.URL.Path != "/v3/document" {
 			t.Errorf("unexpected %s %s", r.Method, r.URL.Path)
 		}
 		if !strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data") {
@@ -39,7 +39,7 @@ func TestDocumentUpload(t *testing.T) {
 func TestDocumentDownload(t *testing.T) {
 	pdfBytes := []byte("PDF content")
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet || r.URL.Path != "/document/doc1" {
+		if r.Method != http.MethodGet || r.URL.Path != "/v3/document/doc1" {
 			t.Errorf("unexpected %s %s", r.Method, r.URL.Path)
 		}
 		_, _ = w.Write(pdfBytes)
@@ -53,20 +53,5 @@ func TestDocumentDownload(t *testing.T) {
 	}
 	if !bytes.Equal(data, pdfBytes) {
 		t.Errorf("unexpected download content")
-	}
-}
-
-func TestDocumentDelete(t *testing.T) {
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodDelete || r.URL.Path != "/document/doc1" {
-			t.Errorf("unexpected %s %s", r.Method, r.URL.Path)
-		}
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer srv.Close()
-
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	if err := c.Document().Delete(context.Background(), "doc1"); err != nil {
-		t.Fatal(err)
 	}
 }
