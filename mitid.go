@@ -51,7 +51,7 @@ type MitIdSignResult struct {
 type MitIdCompleted struct {
 	Id         string           `json:"id"`
 	RefId      *string          `json:"refId"`
-	Ssn        string           `json:"ssn"`
+	Ssn        *string          `json:"ssn"`
 	Name       string           `json:"name"`
 	GivenName  string           `json:"givenName"`
 	Surname    string           `json:"surname"`

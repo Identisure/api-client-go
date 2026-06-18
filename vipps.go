@@ -43,7 +43,7 @@ type VippsPending struct {
 type VippsCompleted struct {
 	Id        string  `json:"id"`
 	RefId     *string `json:"refId"`
-	Ssn       string  `json:"ssn"`
+	Ssn       *string `json:"ssn"`
 	Name      string  `json:"name"`
 	GivenName string  `json:"givenName"`
 	Surname   string  `json:"surname"`
