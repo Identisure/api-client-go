@@ -26,14 +26,10 @@ type BankIdNoBackchannelAuthRequest struct {
 }
 
 type BankIdNoSignRequest struct {
-	RedirectUrl    *string  `json:"redirectUrl,omitempty"`
-	Text           *string  `json:"text,omitempty"`
-	Documents      []string `json:"documents,omitempty"`
-	RequestSsn     *bool    `json:"requestSsn,omitempty"`
-	RequestPhone   *bool    `json:"requestPhone,omitempty"`
-	RequestEmail   *bool    `json:"requestEmail,omitempty"`
-	RequestAddress *bool    `json:"requestAddress,omitempty"`
-	RefId          *string  `json:"refId,omitempty"`
+	RedirectUrl *string  `json:"redirectUrl,omitempty"`
+	Text        *string  `json:"text,omitempty"`
+	Documents   []string `json:"documents,omitempty"`
+	RefId       *string  `json:"refId,omitempty"`
 }
 
 // --- BankID NO status types ---
