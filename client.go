@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -48,7 +49,7 @@ func (b *IdkollenClientBuilder) Environment(env Environment) *IdkollenClientBuil
 }
 
 func (b *IdkollenClientBuilder) BaseURL(url string) *IdkollenClientBuilder {
-	b.baseURL = url
+	b.baseURL = strings.TrimRight(url, "/")
 	return b
 }
 
