@@ -91,29 +91,29 @@ type frejaStatusEnvelope struct {
 func unmarshalFrejaStatus(data []byte) (FrejaStatus, error) {
 	var env frejaStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, err
+		return nil, &IdkollenError{Message: err.Error()}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v FrejaPending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v FrejaCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "FAILED":
 		var v FrejaFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	default:
-		return nil, fmt.Errorf("unknown freja status: %s", env.Status)
+		return nil, &IdkollenError{Message: fmt.Sprintf("unknown freja status: %s", env.Status)}
 	}
 }
 

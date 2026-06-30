@@ -90,29 +90,29 @@ type bankIdNoStatusEnvelope struct {
 func unmarshalBankIdNoStatus(data []byte) (BankIdNoStatus, error) {
 	var env bankIdNoStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, err
+		return nil, &IdkollenError{Message: err.Error()}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v BankIdNoPending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v BankIdNoCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "FAILED":
 		var v BankIdNoFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	default:
-		return nil, fmt.Errorf("unknown bankid-no status: %s", env.Status)
+		return nil, &IdkollenError{Message: fmt.Sprintf("unknown bankid-no status: %s", env.Status)}
 	}
 }
 

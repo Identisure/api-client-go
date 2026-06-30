@@ -49,29 +49,29 @@ type ageVerificationEnvelope struct {
 func unmarshalAgeVerificationStatus(data []byte) (AgeVerificationStatus, error) {
 	var env ageVerificationEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, err
+		return nil, &IdkollenError{Message: err.Error()}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v AgeVerificationPending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v AgeVerificationCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "FAILED":
 		var v AgeVerificationFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	default:
-		return nil, fmt.Errorf("unknown age verification status: %s", env.Status)
+		return nil, &IdkollenError{Message: fmt.Sprintf("unknown age verification status: %s", env.Status)}
 	}
 }
 
@@ -193,58 +193,58 @@ type bankIdSeStatusEnvelope struct {
 func unmarshalBankIdSeStatus(data []byte) (BankIdSeStatus, error) {
 	var env bankIdSeStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, err
+		return nil, &IdkollenError{Message: err.Error()}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v BankIdSePending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v BankIdSeCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "FAILED":
 		var v BankIdSeFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	default:
-		return nil, fmt.Errorf("unknown bankid-se status: %s", env.Status)
+		return nil, &IdkollenError{Message: fmt.Sprintf("unknown bankid-se status: %s", env.Status)}
 	}
 }
 
 func unmarshalBankIdSePhoneStatus(data []byte) (BankIdSePhoneStatus, error) {
 	var env bankIdSeStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, err
+		return nil, &IdkollenError{Message: err.Error()}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v BankIdSePendingPhone
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v BankIdSeCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "FAILED":
 		var v BankIdSeFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	default:
-		return nil, fmt.Errorf("unknown bankid-se phone status: %s", env.Status)
+		return nil, &IdkollenError{Message: fmt.Sprintf("unknown bankid-se phone status: %s", env.Status)}
 	}
 }
 

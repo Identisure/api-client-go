@@ -72,29 +72,29 @@ type vippsStatusEnvelope struct {
 func unmarshalVippsStatus(data []byte) (VippsStatus, error) {
 	var env vippsStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, err
+		return nil, &IdkollenError{Message: err.Error()}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v VippsPending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v VippsCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	case "FAILED":
 		var v VippsFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, err
+			return nil, &IdkollenError{Message: err.Error()}
 		}
 		return &v, nil
 	default:
-		return nil, fmt.Errorf("unknown vipps status: %s", env.Status)
+		return nil, &IdkollenError{Message: fmt.Sprintf("unknown vipps status: %s", env.Status)}
 	}
 }
 
