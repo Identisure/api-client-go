@@ -48,7 +48,7 @@ func (e *DocumentEndpoint) Upload(ctx context.Context, data []byte, filename str
 	}
 	req.Header.Set("Content-Type", w.FormDataContentType())
 	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
-	req.SetBasicAuth(e.client.clientID, e.client.clientSecret)
+	e.client.setAuth(req)
 
 	resp, err := e.client.httpClient.Do(req)
 	if err != nil {
@@ -80,7 +80,7 @@ func (e *DocumentEndpoint) Download(ctx context.Context, id string) ([]byte, err
 		return nil, &IdkollenError{Message: err.Error()}
 	}
 	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
-	req.SetBasicAuth(e.client.clientID, e.client.clientSecret)
+	e.client.setAuth(req)
 
 	resp, err := e.client.httpClient.Do(req)
 	if err != nil {

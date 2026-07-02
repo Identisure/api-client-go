@@ -25,22 +25,24 @@ func (e Environment) baseURL() string {
 	return "https://api.idkollen.se"
 }
 
+// Credentials live in a closure so fmt's %+v cannot print the secret.
+type basicAuth func(*http.Request)
+
 type IdkollenClient struct {
-	clientID     string
-	clientSecret string
-	baseURL      string
-	httpClient   *http.Client
+	setAuth    basicAuth
+	baseURL    string
+	httpClient *http.Client
 }
 
 type IdkollenClientBuilder struct {
-	clientID     string
-	clientSecret string
-	baseURL      string
-	httpClient   *http.Client
+	setAuth    basicAuth
+	baseURL    string
+	httpClient *http.Client
 }
 
 func NewClientBuilder(clientID, clientSecret string) *IdkollenClientBuilder {
-	return &IdkollenClientBuilder{clientID: clientID, clientSecret: clientSecret}
+	setAuth := func(req *http.Request) { req.SetBasicAuth(clientID, clientSecret) }
+	return &IdkollenClientBuilder{setAuth: setAuth}
 }
 
 func (b *IdkollenClientBuilder) Environment(env Environment) *IdkollenClientBuilder {
@@ -68,10 +70,9 @@ func (b *IdkollenClientBuilder) Build() *IdkollenClient {
 		httpClient = &http.Client{Timeout: 30 * time.Second}
 	}
 	return &IdkollenClient{
-		clientID:     b.clientID,
-		clientSecret: b.clientSecret,
-		baseURL:      baseURL,
-		httpClient:   httpClient,
+		setAuth:    b.setAuth,
+		baseURL:    baseURL,
+		httpClient: httpClient,
 	}
 }
 
@@ -124,7 +125,7 @@ func (c *IdkollenClient) post(ctx context.Context, path string, body any, out an
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
-	req.SetBasicAuth(c.clientID, c.clientSecret)
+	c.setAuth(req)
 	return c.do(req, out)
 }
 
@@ -134,7 +135,7 @@ func (c *IdkollenClient) get(ctx context.Context, path string, out any) error {
 		return &IdkollenError{Message: err.Error()}
 	}
 	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
-	req.SetBasicAuth(c.clientID, c.clientSecret)
+	c.setAuth(req)
 	return c.do(req, out)
 }
 
@@ -144,7 +145,7 @@ func (c *IdkollenClient) delete(ctx context.Context, path string) error {
 		return &IdkollenError{Message: err.Error()}
 	}
 	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
-	req.SetBasicAuth(c.clientID, c.clientSecret)
+	c.setAuth(req)
 	return c.do(req, nil)
 }
 
