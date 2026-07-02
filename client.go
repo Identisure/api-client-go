@@ -65,7 +65,7 @@ func (b *IdkollenClientBuilder) Build() *IdkollenClient {
 	}
 	httpClient := b.httpClient
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = &http.Client{Timeout: 30 * time.Second}
 	}
 	return &IdkollenClient{
 		clientID:     b.clientID,
