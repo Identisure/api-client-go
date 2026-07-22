@@ -153,17 +153,31 @@ type BankIdSePendingPhone struct {
 }
 
 type BankIdSeCompleted struct {
-	Id                   string  `json:"id"`
-	RefId                *string `json:"refId"`
-	Ssn                  string  `json:"ssn"`
-	Name                 string  `json:"name"`
-	GivenName            string  `json:"givenName"`
-	Surname              string  `json:"surname"`
-	CertStartDate        *string `json:"certStartDate"`
-	Address              *string `json:"address"`
-	CompanySignatoryText *string `json:"companySignatoryText"`
-	AuthenticatedAt      *string `json:"authenticatedAt"`
-	SignedAt             *string `json:"signedAt"`
+	Id                   string          `json:"id"`
+	RefId                *string         `json:"refId"`
+	Ssn                  string          `json:"ssn"`
+	Name                 string          `json:"name"`
+	GivenName            string          `json:"givenName"`
+	Surname              string          `json:"surname"`
+	CertStartDate        *string         `json:"certStartDate"`
+	OcspResponse         string          `json:"ocspResponse"`
+	Risk                 *string         `json:"risk"`
+	Device               *BankIdSeDevice `json:"device"`
+	StepUp               *BankIdSeStepUp `json:"stepUp"`
+	Address              *string         `json:"address"`
+	CompanySignatoryText *string         `json:"companySignatoryText"`
+	AuthenticatedAt      *string         `json:"authenticatedAt"`
+	SignedAt             *string         `json:"signedAt"`
+}
+
+type BankIdSeDevice struct {
+	IpAddress *string `json:"ipAddress"`
+	Uhi       *string `json:"uhi"`
+}
+
+type BankIdSeStepUp struct {
+	Mrtd *bool `json:"mrtd"`
+	Face *bool `json:"face"`
 }
 
 type BankIdSeFailed struct {
