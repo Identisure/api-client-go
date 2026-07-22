@@ -30,18 +30,20 @@ type FtnPending struct {
 }
 
 type FtnCompleted struct {
-	Id        string  `json:"id"`
-	RefId     *string `json:"refId"`
-	Ssn       *string `json:"ssn"`
-	Name      string  `json:"name"`
-	GivenName string  `json:"givenName"`
-	Surname   string  `json:"surname"`
-	Phone     *string `json:"phone"`
-	Email     *string `json:"email"`
-	Address   *string `json:"address"`
-	BirthDate *string `json:"birthDate"`
-	Pid       *string `json:"pid"`
-	BankId    *string `json:"bankId"`
+	Id              string  `json:"id"`
+	RefId           *string `json:"refId"`
+	Ssn             *string `json:"ssn"`
+	Name            string  `json:"name"`
+	GivenName       string  `json:"givenName"`
+	Surname         string  `json:"surname"`
+	Phone           *string `json:"phone"`
+	Email           *string `json:"email"`
+	Address         *string `json:"address"`
+	BirthDate       *string `json:"birthDate"`
+	Pid             *string `json:"pid"`
+	BankId          *string `json:"bankId"`
+	BankName        *string `json:"bankName"`
+	AuthenticatedAt *string `json:"authenticatedAt"`
 }
 
 type FtnFailed struct {

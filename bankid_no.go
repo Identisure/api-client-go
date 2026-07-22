@@ -71,6 +71,8 @@ type BankIdNoCompleted struct {
 	BankId          *string                  `json:"bankId"`
 	SignResult      *BankIdNoSignResult      `json:"signResult"`
 	SignedDocuments []BankIdNoSignedDocument `json:"signedDocuments"`
+	AuthenticatedAt *string                  `json:"authenticatedAt"`
+	SignedAt        *string                  `json:"signedAt"`
 }
 
 type BankIdNoFailed struct {

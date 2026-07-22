@@ -162,6 +162,8 @@ type BankIdSeCompleted struct {
 	CertStartDate        *string `json:"certStartDate"`
 	Address              *string `json:"address"`
 	CompanySignatoryText *string `json:"companySignatoryText"`
+	AuthenticatedAt      *string `json:"authenticatedAt"`
+	SignedAt             *string `json:"signedAt"`
 }
 
 type BankIdSeFailed struct {

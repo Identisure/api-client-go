@@ -72,6 +72,8 @@ type FrejaCompleted struct {
 	Surname              string  `json:"surname"`
 	Address              *string `json:"address"`
 	CompanySignatoryText *string `json:"companySignatoryText"`
+	AuthenticatedAt      *string `json:"authenticatedAt"`
+	SignedAt             *string `json:"signedAt"`
 }
 
 type FrejaFailed struct {

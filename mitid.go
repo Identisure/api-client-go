@@ -49,19 +49,21 @@ type MitIdSignResult struct {
 }
 
 type MitIdCompleted struct {
-	Id         string           `json:"id"`
-	RefId      *string          `json:"refId"`
-	Ssn        *string          `json:"ssn"`
-	Name       string           `json:"name"`
-	GivenName  string           `json:"givenName"`
-	Surname    string           `json:"surname"`
-	Phone      *string          `json:"phone"`
-	Email      *string          `json:"email"`
-	Address    *string          `json:"address"`
-	BirthDate  *string          `json:"birthDate"`
-	Pid        *string          `json:"pid"`
-	BankId     *string          `json:"bankId"`
-	SignResult *MitIdSignResult `json:"signResult"`
+	Id              string           `json:"id"`
+	RefId           *string          `json:"refId"`
+	Ssn             *string          `json:"ssn"`
+	Name            string           `json:"name"`
+	GivenName       string           `json:"givenName"`
+	Surname         string           `json:"surname"`
+	Phone           *string          `json:"phone"`
+	Email           *string          `json:"email"`
+	Address         *string          `json:"address"`
+	BirthDate       *string          `json:"birthDate"`
+	Pid             *string          `json:"pid"`
+	BankId          *string          `json:"bankId"`
+	SignResult      *MitIdSignResult `json:"signResult"`
+	AuthenticatedAt *string          `json:"authenticatedAt"`
+	SignedAt        *string          `json:"signedAt"`
 }
 
 type MitIdFailed struct {
