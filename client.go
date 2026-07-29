@@ -88,11 +88,15 @@ func (c *IdkollenClient) Document() *DocumentEndpoint  { return &DocumentEndpoin
 type IdkollenError struct {
 	StatusCode int    `json:"-"`
 	Message    string `json:"message"`
+	// Err is the underlying network or decoding error, if any.
+	Err error `json:"-"`
 }
 
 func (e *IdkollenError) Error() string {
 	return fmt.Sprintf("idkollen: %d %s", e.StatusCode, e.Message)
 }
+
+func (e *IdkollenError) Unwrap() error { return e.Err }
 
 // WaitError is returned only by WaitFor* polling helpers.
 type WaitError struct {
@@ -117,11 +121,11 @@ type PollOptions struct {
 func (c *IdkollenClient) post(ctx context.Context, path string, body any, out any) error {
 	data, err := json.Marshal(body)
 	if err != nil {
-		return &IdkollenError{Message: err.Error()}
+		return &IdkollenError{Message: err.Error(), Err: err}
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.baseURL+path, bytes.NewReader(data))
 	if err != nil {
-		return &IdkollenError{Message: err.Error()}
+		return &IdkollenError{Message: err.Error(), Err: err}
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
@@ -132,7 +136,7 @@ func (c *IdkollenClient) post(ctx context.Context, path string, body any, out an
 func (c *IdkollenClient) get(ctx context.Context, path string, out any) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+path, nil)
 	if err != nil {
-		return &IdkollenError{Message: err.Error()}
+		return &IdkollenError{Message: err.Error(), Err: err}
 	}
 	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
 	c.setAuth(req)
@@ -142,7 +146,7 @@ func (c *IdkollenClient) get(ctx context.Context, path string, out any) error {
 func (c *IdkollenClient) delete(ctx context.Context, path string) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, c.baseURL+path, nil)
 	if err != nil {
-		return &IdkollenError{Message: err.Error()}
+		return &IdkollenError{Message: err.Error(), Err: err}
 	}
 	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
 	c.setAuth(req)
@@ -152,12 +156,12 @@ func (c *IdkollenClient) delete(ctx context.Context, path string) error {
 func (c *IdkollenClient) do(req *http.Request, out any) error {
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return &IdkollenError{Message: err.Error()}
+		return &IdkollenError{Message: err.Error(), Err: err}
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return &IdkollenError{Message: err.Error()}
+		return &IdkollenError{Message: err.Error(), Err: err}
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		var apiErr IdkollenError
@@ -169,7 +173,7 @@ func (c *IdkollenClient) do(req *http.Request, out any) error {
 	}
 	if out != nil {
 		if err := json.Unmarshal(body, out); err != nil {
-			return &IdkollenError{Message: err.Error()}
+			return &IdkollenError{Message: err.Error(), Err: err}
 		}
 	}
 	return nil

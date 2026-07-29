@@ -49,25 +49,25 @@ type ageVerificationEnvelope struct {
 func unmarshalAgeVerificationStatus(data []byte) (AgeVerificationStatus, error) {
 	var env ageVerificationEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, &IdkollenError{Message: err.Error()}
+		return nil, &IdkollenError{Message: err.Error(), Err: err}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v AgeVerificationPending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v AgeVerificationCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "FAILED":
 		var v AgeVerificationFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	default:
@@ -209,25 +209,25 @@ type bankIdSeStatusEnvelope struct {
 func unmarshalBankIdSeStatus(data []byte) (BankIdSeStatus, error) {
 	var env bankIdSeStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, &IdkollenError{Message: err.Error()}
+		return nil, &IdkollenError{Message: err.Error(), Err: err}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v BankIdSePending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v BankIdSeCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "FAILED":
 		var v BankIdSeFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	default:
@@ -238,25 +238,25 @@ func unmarshalBankIdSeStatus(data []byte) (BankIdSeStatus, error) {
 func unmarshalBankIdSePhoneStatus(data []byte) (BankIdSePhoneStatus, error) {
 	var env bankIdSeStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, &IdkollenError{Message: err.Error()}
+		return nil, &IdkollenError{Message: err.Error(), Err: err}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v BankIdSePendingPhone
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v BankIdSeCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "FAILED":
 		var v BankIdSeFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	default:

@@ -63,25 +63,25 @@ type ftnStatusEnvelope struct {
 func unmarshalFtnStatus(data []byte) (FtnStatus, error) {
 	var env ftnStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, &IdkollenError{Message: err.Error()}
+		return nil, &IdkollenError{Message: err.Error(), Err: err}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v FtnPending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v FtnCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "FAILED":
 		var v FtnFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error()}
+			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	default:
