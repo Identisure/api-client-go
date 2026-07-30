@@ -186,11 +186,11 @@ type BankIdSeFailed struct {
 	Error string  `json:"error"`
 }
 
-func (*BankIdSePending) isBankIdSeStatus()        {}
-func (*BankIdSeCompleted) isBankIdSeStatus()      {}
-func (*BankIdSeFailed) isBankIdSeStatus()         {}
-func (*BankIdSeCompleted) isBankIdSePhoneStatus() {}
-func (*BankIdSeFailed) isBankIdSePhoneStatus()    {}
+func (*BankIdSePending) isBankIdSeStatus()           {}
+func (*BankIdSeCompleted) isBankIdSeStatus()         {}
+func (*BankIdSeFailed) isBankIdSeStatus()            {}
+func (*BankIdSeCompleted) isBankIdSePhoneStatus()    {}
+func (*BankIdSeFailed) isBankIdSePhoneStatus()       {}
 func (*BankIdSePendingPhone) isBankIdSePhoneStatus() {}
 
 type BankIdSeVerifyResponse struct {

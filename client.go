@@ -76,13 +76,13 @@ func (b *IdkollenClientBuilder) Build() *IdkollenClient {
 	}
 }
 
-func (c *IdkollenClient) BankIdSe() *BankIdSeEndpoint  { return &BankIdSeEndpoint{client: c} }
-func (c *IdkollenClient) BankIdNo() *BankIdNoEndpoint  { return &BankIdNoEndpoint{client: c} }
-func (c *IdkollenClient) Freja() *FrejaEndpoint        { return &FrejaEndpoint{client: c} }
-func (c *IdkollenClient) MitId() *MitIdEndpoint        { return &MitIdEndpoint{client: c} }
-func (c *IdkollenClient) Ftn() *FtnEndpoint            { return &FtnEndpoint{client: c} }
-func (c *IdkollenClient) Vipps() *VippsEndpoint        { return &VippsEndpoint{client: c} }
-func (c *IdkollenClient) Document() *DocumentEndpoint  { return &DocumentEndpoint{client: c} }
+func (c *IdkollenClient) BankIdSe() *BankIdSeEndpoint { return &BankIdSeEndpoint{client: c} }
+func (c *IdkollenClient) BankIdNo() *BankIdNoEndpoint { return &BankIdNoEndpoint{client: c} }
+func (c *IdkollenClient) Freja() *FrejaEndpoint       { return &FrejaEndpoint{client: c} }
+func (c *IdkollenClient) MitId() *MitIdEndpoint       { return &MitIdEndpoint{client: c} }
+func (c *IdkollenClient) Ftn() *FtnEndpoint           { return &FtnEndpoint{client: c} }
+func (c *IdkollenClient) Vipps() *VippsEndpoint       { return &VippsEndpoint{client: c} }
+func (c *IdkollenClient) Document() *DocumentEndpoint { return &DocumentEndpoint{client: c} }
 
 // IdkollenError is returned on non-2xx responses or network failure.
 type IdkollenError struct {
