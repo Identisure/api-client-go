@@ -3,7 +3,6 @@ package idkollen
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -65,6 +64,7 @@ type VippsFailed struct {
 func (*VippsPending) isVippsStatus()   {}
 func (*VippsCompleted) isVippsStatus() {}
 func (*VippsFailed) isVippsStatus()    {}
+func (*UnknownStatus) isVippsStatus()  {}
 
 type vippsStatusEnvelope struct {
 	Status string `json:"status"`
@@ -94,8 +94,10 @@ func unmarshalVippsStatus(data []byte) (VippsStatus, error) {
 			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
+	case "":
+		return nil, &IdkollenError{Message: "Missing status field"}
 	default:
-		return nil, &IdkollenError{Message: fmt.Sprintf("unknown vipps status: %s", env.Status)}
+		return &UnknownStatus{Status: env.Status}, nil
 	}
 }
 

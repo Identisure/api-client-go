@@ -3,7 +3,6 @@ package idkollen
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -41,6 +40,7 @@ type AgeVerificationFailed struct {
 func (*AgeVerificationPending) isAgeVerificationStatus()   {}
 func (*AgeVerificationCompleted) isAgeVerificationStatus() {}
 func (*AgeVerificationFailed) isAgeVerificationStatus()    {}
+func (*UnknownStatus) isAgeVerificationStatus()            {}
 
 type ageVerificationEnvelope struct {
 	Status string `json:"status"`
@@ -70,8 +70,10 @@ func unmarshalAgeVerificationStatus(data []byte) (AgeVerificationStatus, error) 
 			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
+	case "":
+		return nil, &IdkollenError{Message: "Missing status field"}
 	default:
-		return nil, &IdkollenError{Message: fmt.Sprintf("unknown age verification status: %s", env.Status)}
+		return &UnknownStatus{Status: env.Status}, nil
 	}
 }
 
@@ -189,9 +191,11 @@ type BankIdSeFailed struct {
 func (*BankIdSePending) isBankIdSeStatus()           {}
 func (*BankIdSeCompleted) isBankIdSeStatus()         {}
 func (*BankIdSeFailed) isBankIdSeStatus()            {}
+func (*UnknownStatus) isBankIdSeStatus()             {}
 func (*BankIdSeCompleted) isBankIdSePhoneStatus()    {}
 func (*BankIdSeFailed) isBankIdSePhoneStatus()       {}
 func (*BankIdSePendingPhone) isBankIdSePhoneStatus() {}
+func (*UnknownStatus) isBankIdSePhoneStatus()        {}
 
 type BankIdSeVerifyResponse struct {
 	Ssn        string  `json:"ssn"`
@@ -230,8 +234,10 @@ func unmarshalBankIdSeStatus(data []byte) (BankIdSeStatus, error) {
 			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
+	case "":
+		return nil, &IdkollenError{Message: "Missing status field"}
 	default:
-		return nil, &IdkollenError{Message: fmt.Sprintf("unknown bankid-se status: %s", env.Status)}
+		return &UnknownStatus{Status: env.Status}, nil
 	}
 }
 
@@ -259,8 +265,10 @@ func unmarshalBankIdSePhoneStatus(data []byte) (BankIdSePhoneStatus, error) {
 			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
+	case "":
+		return nil, &IdkollenError{Message: "Missing status field"}
 	default:
-		return nil, &IdkollenError{Message: fmt.Sprintf("unknown bankid-se phone status: %s", env.Status)}
+		return &UnknownStatus{Status: env.Status}, nil
 	}
 }
 

@@ -3,7 +3,6 @@ package idkollen
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -75,6 +74,7 @@ type MitIdFailed struct {
 func (*MitIdPending) isMitIdStatus()   {}
 func (*MitIdCompleted) isMitIdStatus() {}
 func (*MitIdFailed) isMitIdStatus()    {}
+func (*UnknownStatus) isMitIdStatus()  {}
 
 type mitIdStatusEnvelope struct {
 	Status string `json:"status"`
@@ -104,8 +104,10 @@ func unmarshalMitIdStatus(data []byte) (MitIdStatus, error) {
 			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
+	case "":
+		return nil, &IdkollenError{Message: "Missing status field"}
 	default:
-		return nil, &IdkollenError{Message: fmt.Sprintf("unknown mitid status: %s", env.Status)}
+		return &UnknownStatus{Status: env.Status}, nil
 	}
 }
 

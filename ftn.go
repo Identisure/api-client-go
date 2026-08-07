@@ -3,7 +3,6 @@ package idkollen
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -52,9 +51,10 @@ type FtnFailed struct {
 	Error string  `json:"error"`
 }
 
-func (*FtnPending) isFtnStatus()   {}
-func (*FtnCompleted) isFtnStatus() {}
-func (*FtnFailed) isFtnStatus()    {}
+func (*FtnPending) isFtnStatus()    {}
+func (*FtnCompleted) isFtnStatus()  {}
+func (*FtnFailed) isFtnStatus()     {}
+func (*UnknownStatus) isFtnStatus() {}
 
 type ftnStatusEnvelope struct {
 	Status string `json:"status"`
@@ -84,8 +84,10 @@ func unmarshalFtnStatus(data []byte) (FtnStatus, error) {
 			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
+	case "":
+		return nil, &IdkollenError{Message: "Missing status field"}
 	default:
-		return nil, &IdkollenError{Message: fmt.Sprintf("unknown ftn status: %s", env.Status)}
+		return &UnknownStatus{Status: env.Status}, nil
 	}
 }
 

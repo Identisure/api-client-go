@@ -3,7 +3,6 @@ package idkollen
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -85,6 +84,7 @@ type FrejaFailed struct {
 func (*FrejaPending) isFrejaStatus()   {}
 func (*FrejaCompleted) isFrejaStatus() {}
 func (*FrejaFailed) isFrejaStatus()    {}
+func (*UnknownStatus) isFrejaStatus()  {}
 
 type frejaStatusEnvelope struct {
 	Status string `json:"status"`
@@ -114,8 +114,10 @@ func unmarshalFrejaStatus(data []byte) (FrejaStatus, error) {
 			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
+	case "":
+		return nil, &IdkollenError{Message: "Missing status field"}
 	default:
-		return nil, &IdkollenError{Message: fmt.Sprintf("unknown freja status: %s", env.Status)}
+		return &UnknownStatus{Status: env.Status}, nil
 	}
 }
 

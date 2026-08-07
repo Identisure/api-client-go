@@ -3,7 +3,6 @@ package idkollen
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -84,6 +83,7 @@ type BankIdNoFailed struct {
 func (*BankIdNoPending) isBankIdNoStatus()   {}
 func (*BankIdNoCompleted) isBankIdNoStatus() {}
 func (*BankIdNoFailed) isBankIdNoStatus()    {}
+func (*UnknownStatus) isBankIdNoStatus()     {}
 
 type bankIdNoStatusEnvelope struct {
 	Status string `json:"status"`
@@ -113,8 +113,10 @@ func unmarshalBankIdNoStatus(data []byte) (BankIdNoStatus, error) {
 			return nil, &IdkollenError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
+	case "":
+		return nil, &IdkollenError{Message: "Missing status field"}
 	default:
-		return nil, &IdkollenError{Message: fmt.Sprintf("unknown bankid-no status: %s", env.Status)}
+		return &UnknownStatus{Status: env.Status}, nil
 	}
 }
 

@@ -47,3 +47,23 @@ func TestVippsBackchannelAuth(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestVippsAuthStatus_Unknown(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte(`{"status":"SOMETHING_NEW","id":"vp1"}`))
+	}))
+	defer srv.Close()
+
+	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.Vipps().AuthStatus(context.Background(), "vp1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	u, ok := status.(*idkollen.UnknownStatus)
+	if !ok {
+		t.Fatalf("expected *UnknownStatus, got %T", status)
+	}
+	if u.Status != "SOMETHING_NEW" {
+		t.Errorf("expected status SOMETHING_NEW, got %s", u.Status)
+	}
+}
