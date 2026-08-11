@@ -63,6 +63,12 @@ func main() {
 }
 ```
 
+### Verifying callbacks
+
+```go
+valid := idkollen.VerifyCallbackSignature(rawBody, r.Header.Get("X-Signature-SHA256"), hmacSecret)
+```
+
 ## Development
 
 #### Prerequisites
