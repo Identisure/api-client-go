@@ -32,17 +32,19 @@ type IdkollenClient struct {
 	setAuth    basicAuth
 	baseURL    string
 	httpClient *http.Client
+	timeout    time.Duration
 }
 
 type IdkollenClientBuilder struct {
 	setAuth    basicAuth
 	baseURL    string
 	httpClient *http.Client
+	timeout    time.Duration
 }
 
 func NewClientBuilder(clientID, clientSecret string) *IdkollenClientBuilder {
 	setAuth := func(req *http.Request) { req.SetBasicAuth(clientID, clientSecret) }
-	return &IdkollenClientBuilder{setAuth: setAuth}
+	return &IdkollenClientBuilder{setAuth: setAuth, timeout: 30 * time.Second}
 }
 
 func (b *IdkollenClientBuilder) Environment(env Environment) *IdkollenClientBuilder {
@@ -60,6 +62,13 @@ func (b *IdkollenClientBuilder) HTTPClient(c *http.Client) *IdkollenClientBuilde
 	return b
 }
 
+// Timeout sets the timeout for each HTTP request, including reading the response body.
+// It must be positive. Default: 30s.
+func (b *IdkollenClientBuilder) Timeout(d time.Duration) *IdkollenClientBuilder {
+	b.timeout = d
+	return b
+}
+
 func (b *IdkollenClientBuilder) Build() *IdkollenClient {
 	baseURL := b.baseURL
 	if baseURL == "" {
@@ -67,12 +76,13 @@ func (b *IdkollenClientBuilder) Build() *IdkollenClient {
 	}
 	httpClient := b.httpClient
 	if httpClient == nil {
-		httpClient = &http.Client{Timeout: 30 * time.Second}
+		httpClient = &http.Client{}
 	}
 	return &IdkollenClient{
 		setAuth:    b.setAuth,
 		baseURL:    baseURL,
 		httpClient: httpClient,
+		timeout:    b.timeout,
 	}
 }
 
@@ -154,22 +164,9 @@ func (c *IdkollenClient) delete(ctx context.Context, path string) error {
 }
 
 func (c *IdkollenClient) do(req *http.Request, out any) error {
-	resp, err := c.httpClient.Do(req)
+	body, err := c.send(req)
 	if err != nil {
-		return &IdkollenError{Message: err.Error(), Err: err}
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return &IdkollenError{Message: err.Error(), Err: err}
-	}
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		var apiErr IdkollenError
-		if jsonErr := json.Unmarshal(body, &apiErr); jsonErr != nil {
-			return &IdkollenError{StatusCode: resp.StatusCode, Message: string(body)}
-		}
-		apiErr.StatusCode = resp.StatusCode
-		return &apiErr
+		return err
 	}
 	if out != nil {
 		if err := json.Unmarshal(body, out); err != nil {
@@ -177,4 +174,28 @@ func (c *IdkollenClient) do(req *http.Request, out any) error {
 		}
 	}
 	return nil
+}
+
+// send performs req within the client timeout and returns the body of a 2xx response.
+func (c *IdkollenClient) send(req *http.Request) ([]byte, error) {
+	ctx, cancel := context.WithTimeout(req.Context(), c.timeout)
+	defer cancel()
+	resp, err := c.httpClient.Do(req.WithContext(ctx))
+	if err != nil {
+		return nil, &IdkollenError{Message: err.Error(), Err: err}
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, &IdkollenError{Message: err.Error(), Err: err}
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		var apiErr IdkollenError
+		if jsonErr := json.Unmarshal(body, &apiErr); jsonErr != nil {
+			return nil, &IdkollenError{StatusCode: resp.StatusCode, Message: string(body)}
+		}
+		apiErr.StatusCode = resp.StatusCode
+		return nil, &apiErr
+	}
+	return body, nil
 }

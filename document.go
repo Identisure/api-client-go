@@ -3,8 +3,6 @@ package idkollen
 import (
 	"bytes"
 	"context"
-	"encoding/json"
-	"io"
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
@@ -50,26 +48,9 @@ func (e *DocumentEndpoint) Upload(ctx context.Context, data []byte, filename str
 	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
 	e.client.setAuth(req)
 
-	resp, err := e.client.httpClient.Do(req)
-	if err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
-	}
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		var apiErr IdkollenError
-		if jsonErr := json.Unmarshal(body, &apiErr); jsonErr != nil {
-			return nil, &IdkollenError{StatusCode: resp.StatusCode, Message: string(body)}
-		}
-		apiErr.StatusCode = resp.StatusCode
-		return nil, &apiErr
-	}
 	var out DocumentUploadResponse
-	if err := json.Unmarshal(body, &out); err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
+	if err := e.client.do(req, &out); err != nil {
+		return nil, err
 	}
 	return &out, nil
 }
@@ -82,22 +63,5 @@ func (e *DocumentEndpoint) Download(ctx context.Context, id string) ([]byte, err
 	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
 	e.client.setAuth(req)
 
-	resp, err := e.client.httpClient.Do(req)
-	if err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
-	}
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		var apiErr IdkollenError
-		if jsonErr := json.Unmarshal(body, &apiErr); jsonErr != nil {
-			return nil, &IdkollenError{StatusCode: resp.StatusCode, Message: string(body)}
-		}
-		apiErr.StatusCode = resp.StatusCode
-		return nil, &apiErr
-	}
-	return body, nil
+	return e.client.send(req)
 }
