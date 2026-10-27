@@ -1,0 +1,9 @@
+build:
+    go build ./...
+
+test:
+    go test ./...
+
+check:
+    go vet ./...
+    test -z "$(gofmt -l .)"

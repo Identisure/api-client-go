@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	identisure "github.com/identisure/idk-clients/go/identisure"
+	identisure "github.com/identisure/api-client-go"
 )
 
 var fastPoll = identisure.PollOptions{Interval: time.Millisecond}
@@ -94,7 +94,7 @@ func (fs *fixtureServer) assertRequests(want ...recordedRequest) {
 
 func readFixture(t *testing.T, name string) []byte {
 	t.Helper()
-	data, err := os.ReadFile(filepath.Join("..", "..", "fixtures", name))
+	data, err := os.ReadFile(filepath.Join("fixtures", name))
 	if err != nil {
 		t.Fatalf("read fixture %s: %v", name, err)
 	}

@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	identisure "github.com/identisure/idk-clients/go/identisure"
+	identisure "github.com/identisure/api-client-go"
 )
 
 func TestVippsAuth_Pending(t *testing.T) {

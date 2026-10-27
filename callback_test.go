@@ -3,7 +3,7 @@ package identisure_test
 import (
 	"testing"
 
-	identisure "github.com/identisure/idk-clients/go/identisure"
+	identisure "github.com/identisure/api-client-go"
 )
 
 const (

@@ -1,12 +1,12 @@
-<img align="left" height="100" style="margin-right: 10px;" src="../img/icon.png">
+<img align="left" height="100" style="margin-right: 10px;" src="img/icon.png">
 
 # Identisure Go Client
 
 [![pkg.go.dev][pkg-image]][pkg-url]
 [![MIT license][license-image]][license-url]
 
-[pkg-image]: https://pkg.go.dev/badge/github.com/identisure/idk-clients/go/identisure.svg
-[pkg-url]: https://pkg.go.dev/github.com/identisure/idk-clients/go/identisure
+[pkg-image]: https://pkg.go.dev/badge/github.com/identisure/api-client-go.svg
+[pkg-url]: https://pkg.go.dev/github.com/identisure/api-client-go
 [license-image]: https://img.shields.io/badge/license-MIT-blue?style=flat-square
 [license-url]: https://opensource.org/license/mit
 
@@ -15,7 +15,7 @@ API client for the [Identisure](https://developers.identisure.com) REST API.
 ## Installation
 
 ```sh
-go get github.com/identisure/idk-clients/go/identisure
+go get github.com/identisure/api-client-go
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ import (
     "fmt"
     "time"
 
-    identisure "github.com/identisure/idk-clients/go/identisure"
+    identisure "github.com/identisure/api-client-go"
 )
 
 func main() {
@@ -70,6 +70,9 @@ valid := identisure.VerifyCallbackSignature(rawBody, r.Header.Get("X-Signature-S
 ```
 
 ## Development
+
+Test fixtures live in a submodule. Clone with `--recurse-submodules`, or run
+`git submodule update --init` in an existing clone.
 
 #### Prerequisites
 
