@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check that the version matches the tag
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          check() {
+            grep -qF "$2" "$1" || { echo "::error file=$1::Version in $1 does not match tag $GITHUB_REF_NAME"; exit 1; }
+          }
+          check client.go "identisure-client-go/$version\""
+          check document.go "identisure-client-go/$version\""
+
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    needs: [version, ci]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - run: gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --generate-notes --verify-tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+      # Fetch the version through the Go module proxy so pkg.go.dev lists it right away.
+      - run: curl -fsS "https://proxy.golang.org/github.com/identisure/api-client-go/@v/$GITHUB_REF_NAME.info"
