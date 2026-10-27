@@ -20,9 +20,9 @@ const (
 
 func (e Environment) baseURL() string {
 	if e == Staging {
-		return "https://stgapi.identisure.com"
+		return "https://stgapi.idkollen.se"
 	}
-	return "https://api.identisure.com"
+	return "https://api.idkollen.se"
 }
 
 // Credentials live in a closure so fmt's %+v cannot print the secret.
