@@ -1,4 +1,4 @@
-package idkollen_test
+package identisure_test
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	idkollen "github.com/idkollen/idk-clients/go/idkollen"
+	identisure "github.com/identisure/idk-clients/go/identisure"
 )
 
 func TestFtnAuth_Pending(t *testing.T) {
@@ -18,12 +18,12 @@ func TestFtnAuth_Pending(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.Ftn().Auth(context.Background(), idkollen.FtnAuthRequest{})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.Ftn().Auth(context.Background(), identisure.FtnAuthRequest{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	p, ok := status.(*idkollen.FtnPending)
+	p, ok := status.(*identisure.FtnPending)
 	if !ok {
 		t.Fatalf("expected *FtnPending, got %T", status)
 	}
@@ -41,9 +41,9 @@ func TestFtnAgeVerification(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
 	minAge := 18
-	_, err := c.Ftn().AgeVerification(context.Background(), idkollen.AgeVerificationRequest{MinAge: &minAge})
+	_, err := c.Ftn().AgeVerification(context.Background(), identisure.AgeVerificationRequest{MinAge: &minAge})
 	if err != nil {
 		t.Fatal(err)
 	}

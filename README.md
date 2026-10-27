@@ -1,21 +1,21 @@
 <img align="left" height="100" style="margin-right: 10px;" src="../img/icon.png">
 
-# IDkollen Go Client
+# Identisure Go Client
 
 [![pkg.go.dev][pkg-image]][pkg-url]
 [![MIT license][license-image]][license-url]
 
-[pkg-image]: https://pkg.go.dev/badge/github.com/idkollen/idk-clients/go/idkollen.svg
-[pkg-url]: https://pkg.go.dev/github.com/idkollen/idk-clients/go/idkollen
+[pkg-image]: https://pkg.go.dev/badge/github.com/identisure/idk-clients/go/identisure.svg
+[pkg-url]: https://pkg.go.dev/github.com/identisure/idk-clients/go/identisure
 [license-image]: https://img.shields.io/badge/license-MIT-blue?style=flat-square
 [license-url]: https://opensource.org/license/mit
 
-API client for the [IDkollen](https://developers.idkollen.se) REST API.
+API client for the [Identisure](https://developers.identisure.com) REST API.
 
 ## Installation
 
 ```sh
-go get github.com/idkollen/idk-clients/go/idkollen
+go get github.com/identisure/idk-clients/go/identisure
 ```
 
 ## Usage
@@ -28,36 +28,36 @@ import (
     "fmt"
     "time"
 
-    idkollen "github.com/idkollen/idk-clients/go/idkollen"
+    identisure "github.com/identisure/idk-clients/go/identisure"
 )
 
 func main() {
-    client := idkollen.NewClientBuilder("client_id", "client_secret").
-        Environment(idkollen.Staging).
+    client := identisure.NewClientBuilder("client_id", "client_secret").
+        Environment(identisure.Staging).
         Build()
 
     ctx := context.Background()
 
-    session, err := client.BankIdSe().Auth(ctx, idkollen.BankIdSeAuthRequest{})
+    session, err := client.BankIdSe().Auth(ctx, identisure.BankIdSeAuthRequest{})
     if err != nil {
         panic(err)
     }
 
-    pending := session.(*idkollen.BankIdSePending)
+    pending := session.(*identisure.BankIdSePending)
     fmt.Println("Session ID:", pending.Id)
 
     pollCtx, cancel := context.WithTimeout(ctx, 5*time.Minute)
     defer cancel()
 
-    result, err := client.BankIdSe().WaitForAuth(pollCtx, pending.Id, idkollen.PollOptions{})
+    result, err := client.BankIdSe().WaitForAuth(pollCtx, pending.Id, identisure.PollOptions{})
     if err != nil {
         panic(err)
     }
 
     switch r := result.(type) {
-    case *idkollen.BankIdSeCompleted:
+    case *identisure.BankIdSeCompleted:
         fmt.Println("Authenticated:", r.Name, r.Ssn)
-    case *idkollen.BankIdSeFailed:
+    case *identisure.BankIdSeFailed:
         fmt.Println("Failed:", r.Error)
     }
 }
@@ -66,7 +66,7 @@ func main() {
 ### Verifying callbacks
 
 ```go
-valid := idkollen.VerifyCallbackSignature(rawBody, r.Header.Get("X-Signature-SHA256"), hmacSecret)
+valid := identisure.VerifyCallbackSignature(rawBody, r.Header.Get("X-Signature-SHA256"), hmacSecret)
 ```
 
 ## Development

@@ -1,4 +1,4 @@
-package idkollen
+package identisure
 
 import (
 	"context"
@@ -93,29 +93,29 @@ type frejaStatusEnvelope struct {
 func unmarshalFrejaStatus(data []byte) (FrejaStatus, error) {
 	var env frejaStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
+		return nil, &IdentisureError{Message: err.Error(), Err: err}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v FrejaPending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error(), Err: err}
+			return nil, &IdentisureError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v FrejaCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error(), Err: err}
+			return nil, &IdentisureError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "FAILED":
 		var v FrejaFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error(), Err: err}
+			return nil, &IdentisureError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "":
-		return nil, &IdkollenError{Message: "Missing status field"}
+		return nil, &IdentisureError{Message: "Missing status field"}
 	default:
 		return &UnknownStatus{Status: env.Status}, nil
 	}
@@ -124,7 +124,7 @@ func unmarshalFrejaStatus(data []byte) (FrejaStatus, error) {
 // --- Freja endpoint ---
 
 type FrejaEndpoint struct {
-	client *IdkollenClient
+	client *IdentisureClient
 }
 
 func (e *FrejaEndpoint) Auth(ctx context.Context, req FrejaAuthRequest) (FrejaStatus, error) {

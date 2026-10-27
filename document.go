@@ -1,4 +1,4 @@
-package idkollen
+package identisure
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ type DocumentUploadResponse struct {
 }
 
 type DocumentEndpoint struct {
-	client *IdkollenClient
+	client *IdentisureClient
 }
 
 // Escapes the characters that would break the quoted Content-Disposition value,
@@ -31,21 +31,21 @@ func (e *DocumentEndpoint) Upload(ctx context.Context, data []byte, filename str
 	h.Set("Content-Type", mimeType)
 	part, err := w.CreatePart(h)
 	if err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
+		return nil, &IdentisureError{Message: err.Error(), Err: err}
 	}
 	if _, err := part.Write(data); err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
+		return nil, &IdentisureError{Message: err.Error(), Err: err}
 	}
 	if err := w.Close(); err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
+		return nil, &IdentisureError{Message: err.Error(), Err: err}
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, e.client.baseURL+"/v3/document", &buf)
 	if err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
+		return nil, &IdentisureError{Message: err.Error(), Err: err}
 	}
 	req.Header.Set("Content-Type", w.FormDataContentType())
-	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
+	req.Header.Set("User-Agent", "identisure-client-go/0.1.0")
 	e.client.setAuth(req)
 
 	var out DocumentUploadResponse
@@ -58,9 +58,9 @@ func (e *DocumentEndpoint) Upload(ctx context.Context, data []byte, filename str
 func (e *DocumentEndpoint) Download(ctx context.Context, id string) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, e.client.baseURL+"/v3/document/"+id, nil)
 	if err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
+		return nil, &IdentisureError{Message: err.Error(), Err: err}
 	}
-	req.Header.Set("User-Agent", "idkollen-client-go/0.1.0")
+	req.Header.Set("User-Agent", "identisure-client-go/0.1.0")
 	e.client.setAuth(req)
 
 	return e.client.send(req)

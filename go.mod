@@ -1,3 +1,3 @@
-module github.com/idkollen/idk-clients/go
+module github.com/identisure/idk-clients/go
 
 go 1.21

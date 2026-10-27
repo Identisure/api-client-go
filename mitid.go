@@ -1,4 +1,4 @@
-package idkollen
+package identisure
 
 import (
 	"context"
@@ -83,29 +83,29 @@ type mitIdStatusEnvelope struct {
 func unmarshalMitIdStatus(data []byte) (MitIdStatus, error) {
 	var env mitIdStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
+		return nil, &IdentisureError{Message: err.Error(), Err: err}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v MitIdPending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error(), Err: err}
+			return nil, &IdentisureError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v MitIdCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error(), Err: err}
+			return nil, &IdentisureError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "FAILED":
 		var v MitIdFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error(), Err: err}
+			return nil, &IdentisureError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "":
-		return nil, &IdkollenError{Message: "Missing status field"}
+		return nil, &IdentisureError{Message: "Missing status field"}
 	default:
 		return &UnknownStatus{Status: env.Status}, nil
 	}
@@ -114,7 +114,7 @@ func unmarshalMitIdStatus(data []byte) (MitIdStatus, error) {
 // --- MitID endpoint ---
 
 type MitIdEndpoint struct {
-	client *IdkollenClient
+	client *IdentisureClient
 }
 
 func (e *MitIdEndpoint) Auth(ctx context.Context, req MitIdAuthRequest) (MitIdStatus, error) {

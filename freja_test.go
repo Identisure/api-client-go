@@ -1,4 +1,4 @@
-package idkollen_test
+package identisure_test
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	idkollen "github.com/idkollen/idk-clients/go/idkollen"
+	identisure "github.com/identisure/idk-clients/go/identisure"
 )
 
 func TestFrejaAuth_Pending(t *testing.T) {
@@ -18,12 +18,12 @@ func TestFrejaAuth_Pending(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.Freja().Auth(context.Background(), idkollen.FrejaAuthRequest{})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.Freja().Auth(context.Background(), identisure.FrejaAuthRequest{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	p, ok := status.(*idkollen.FrejaPending)
+	p, ok := status.(*identisure.FrejaPending)
 	if !ok {
 		t.Fatalf("expected *FrejaPending, got %T", status)
 	}
@@ -41,8 +41,8 @@ func TestFrejaBackchannelSign(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	_, err := c.Freja().BackchannelSign(context.Background(), idkollen.FrejaBackchannelSignRequest{Ssn: "190001011234", Country: "SE", Text: "Sign this"})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	_, err := c.Freja().BackchannelSign(context.Background(), identisure.FrejaBackchannelSignRequest{Ssn: "190001011234", Country: "SE", Text: "Sign this"})
 	if err != nil {
 		t.Fatal(err)
 	}

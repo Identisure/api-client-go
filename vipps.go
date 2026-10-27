@@ -1,4 +1,4 @@
-package idkollen
+package identisure
 
 import (
 	"context"
@@ -73,29 +73,29 @@ type vippsStatusEnvelope struct {
 func unmarshalVippsStatus(data []byte) (VippsStatus, error) {
 	var env vippsStatusEnvelope
 	if err := json.Unmarshal(data, &env); err != nil {
-		return nil, &IdkollenError{Message: err.Error(), Err: err}
+		return nil, &IdentisureError{Message: err.Error(), Err: err}
 	}
 	switch env.Status {
 	case "PENDING":
 		var v VippsPending
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error(), Err: err}
+			return nil, &IdentisureError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "COMPLETED":
 		var v VippsCompleted
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error(), Err: err}
+			return nil, &IdentisureError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "FAILED":
 		var v VippsFailed
 		if err := json.Unmarshal(data, &v); err != nil {
-			return nil, &IdkollenError{Message: err.Error(), Err: err}
+			return nil, &IdentisureError{Message: err.Error(), Err: err}
 		}
 		return &v, nil
 	case "":
-		return nil, &IdkollenError{Message: "Missing status field"}
+		return nil, &IdentisureError{Message: "Missing status field"}
 	default:
 		return &UnknownStatus{Status: env.Status}, nil
 	}
@@ -104,7 +104,7 @@ func unmarshalVippsStatus(data []byte) (VippsStatus, error) {
 // --- Vipps endpoint ---
 
 type VippsEndpoint struct {
-	client *IdkollenClient
+	client *IdentisureClient
 }
 
 func (e *VippsEndpoint) Auth(ctx context.Context, req VippsAuthRequest) (VippsStatus, error) {

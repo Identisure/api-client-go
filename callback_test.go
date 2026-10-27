@@ -1,9 +1,9 @@
-package idkollen_test
+package identisure_test
 
 import (
 	"testing"
 
-	idkollen "github.com/idkollen/idk-clients/go/idkollen"
+	identisure "github.com/identisure/idk-clients/go/identisure"
 )
 
 const (
@@ -13,19 +13,19 @@ const (
 )
 
 func TestVerifyCallbackSignature_Valid(t *testing.T) {
-	if !idkollen.VerifyCallbackSignature([]byte(callbackBody), callbackSignature, callbackSecret) {
+	if !identisure.VerifyCallbackSignature([]byte(callbackBody), callbackSignature, callbackSecret) {
 		t.Error("expected valid signature")
 	}
 }
 
 func TestVerifyCallbackSignature_TamperedBody(t *testing.T) {
-	if idkollen.VerifyCallbackSignature([]byte(`{"id":"abd","status":"COMPLETED"}`), callbackSignature, callbackSecret) {
+	if identisure.VerifyCallbackSignature([]byte(`{"id":"abd","status":"COMPLETED"}`), callbackSignature, callbackSecret) {
 		t.Error("expected tampered body to be rejected")
 	}
 }
 
 func TestVerifyCallbackSignature_Malformed(t *testing.T) {
-	if idkollen.VerifyCallbackSignature([]byte(callbackBody), "not base64!", callbackSecret) {
+	if identisure.VerifyCallbackSignature([]byte(callbackBody), "not base64!", callbackSecret) {
 		t.Error("expected malformed signature to be rejected")
 	}
 }

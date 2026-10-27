@@ -1,4 +1,4 @@
-package idkollen_test
+package identisure_test
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	idkollen "github.com/idkollen/idk-clients/go/idkollen"
+	identisure "github.com/identisure/idk-clients/go/identisure"
 )
 
 func TestBankIdNoAuth_Pending(t *testing.T) {
@@ -18,12 +18,12 @@ func TestBankIdNoAuth_Pending(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.BankIdNo().Auth(context.Background(), idkollen.BankIdNoAuthRequest{})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.BankIdNo().Auth(context.Background(), identisure.BankIdNoAuthRequest{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	p, ok := status.(*idkollen.BankIdNoPending)
+	p, ok := status.(*identisure.BankIdNoPending)
 	if !ok {
 		t.Fatalf("expected *BankIdNoPending, got %T", status)
 	}
@@ -38,12 +38,12 @@ func TestBankIdNoSign_Completed(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.BankIdNo().Sign(context.Background(), idkollen.BankIdNoSignRequest{})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.BankIdNo().Sign(context.Background(), identisure.BankIdNoSignRequest{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, ok := status.(*idkollen.BankIdNoCompleted); !ok {
+	if _, ok := status.(*identisure.BankIdNoCompleted); !ok {
 		t.Fatalf("expected *BankIdNoCompleted, got %T", status)
 	}
 }
@@ -57,8 +57,8 @@ func TestBankIdNoBackchannelAuth(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	_, err := c.BankIdNo().BackchannelAuth(context.Background(), idkollen.BankIdNoBackchannelAuthRequest{Ssn: "12345678901"})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	_, err := c.BankIdNo().BackchannelAuth(context.Background(), identisure.BankIdNoBackchannelAuthRequest{Ssn: "12345678901"})
 	if err != nil {
 		t.Fatal(err)
 	}

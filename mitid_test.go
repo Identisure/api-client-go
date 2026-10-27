@@ -1,4 +1,4 @@
-package idkollen_test
+package identisure_test
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	idkollen "github.com/idkollen/idk-clients/go/idkollen"
+	identisure "github.com/identisure/idk-clients/go/identisure"
 )
 
 func TestMitIdAuth_Pending(t *testing.T) {
@@ -18,12 +18,12 @@ func TestMitIdAuth_Pending(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.MitId().Auth(context.Background(), idkollen.MitIdAuthRequest{})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.MitId().Auth(context.Background(), identisure.MitIdAuthRequest{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	p, ok := status.(*idkollen.MitIdPending)
+	p, ok := status.(*identisure.MitIdPending)
 	if !ok {
 		t.Fatalf("expected *MitIdPending, got %T", status)
 	}
@@ -41,8 +41,8 @@ func TestMitIdBackchannelAuth(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	_, err := c.MitId().BackchannelAuth(context.Background(), idkollen.MitIdBackchannelAuthRequest{Ssn: "1234567890", BindingMessage: "Login"})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	_, err := c.MitId().BackchannelAuth(context.Background(), identisure.MitIdBackchannelAuthRequest{Ssn: "1234567890", BindingMessage: "Login"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -54,12 +54,12 @@ func TestMitIdSign_Completed(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.MitId().Sign(context.Background(), idkollen.MitIdSignRequest{Text: "Sign this"})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.MitId().Sign(context.Background(), identisure.MitIdSignRequest{Text: "Sign this"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	comp, ok := status.(*idkollen.MitIdCompleted)
+	comp, ok := status.(*identisure.MitIdCompleted)
 	if !ok {
 		t.Fatalf("expected *MitIdCompleted, got %T", status)
 	}

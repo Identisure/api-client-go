@@ -1,4 +1,4 @@
-package idkollen_test
+package identisure_test
 
 import (
 	"context"
@@ -14,10 +14,10 @@ import (
 	"testing"
 	"time"
 
-	idkollen "github.com/idkollen/idk-clients/go/idkollen"
+	identisure "github.com/identisure/idk-clients/go/identisure"
 )
 
-var fastPoll = idkollen.PollOptions{Interval: time.Millisecond}
+var fastPoll = identisure.PollOptions{Interval: time.Millisecond}
 
 type mockResponse struct {
 	status  int
@@ -67,8 +67,8 @@ func (fs *fixtureServer) handle(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(readFixture(fs.t, res.fixture))
 }
 
-func (fs *fixtureServer) client() *idkollen.IdkollenClient {
-	return idkollen.NewClientBuilder("client-id", "client-secret").BaseURL(fs.srv.URL).Build()
+func (fs *fixtureServer) client() *identisure.IdentisureClient {
+	return identisure.NewClientBuilder("client-id", "client-secret").BaseURL(fs.srv.URL).Build()
 }
 
 func (fs *fixtureServer) assertRequests(want ...recordedRequest) {
@@ -142,62 +142,62 @@ type authFlow struct {
 	provider string
 	path     string
 	id       string
-	start    func(context.Context, *idkollen.IdkollenClient) (any, error)
-	wait     func(context.Context, *idkollen.IdkollenClient, string) (any, error)
+	start    func(context.Context, *identisure.IdentisureClient) (any, error)
+	wait     func(context.Context, *identisure.IdentisureClient, string) (any, error)
 }
 
 var authFlows = []authFlow{
 	{
 		provider: "bankid_se", path: "bankid-se", id: "bankid-se-session-1",
-		start: func(ctx context.Context, c *idkollen.IdkollenClient) (any, error) {
-			return c.BankIdSe().Auth(ctx, idkollen.BankIdSeAuthRequest{})
+		start: func(ctx context.Context, c *identisure.IdentisureClient) (any, error) {
+			return c.BankIdSe().Auth(ctx, identisure.BankIdSeAuthRequest{})
 		},
-		wait: func(ctx context.Context, c *idkollen.IdkollenClient, id string) (any, error) {
+		wait: func(ctx context.Context, c *identisure.IdentisureClient, id string) (any, error) {
 			return c.BankIdSe().WaitForAuth(ctx, id, fastPoll)
 		},
 	},
 	{
 		provider: "bankid_no", path: "bankid-no", id: "bankid-no-session-1",
-		start: func(ctx context.Context, c *idkollen.IdkollenClient) (any, error) {
-			return c.BankIdNo().Auth(ctx, idkollen.BankIdNoAuthRequest{})
+		start: func(ctx context.Context, c *identisure.IdentisureClient) (any, error) {
+			return c.BankIdNo().Auth(ctx, identisure.BankIdNoAuthRequest{})
 		},
-		wait: func(ctx context.Context, c *idkollen.IdkollenClient, id string) (any, error) {
+		wait: func(ctx context.Context, c *identisure.IdentisureClient, id string) (any, error) {
 			return c.BankIdNo().WaitForAuth(ctx, id, fastPoll)
 		},
 	},
 	{
 		provider: "freja", path: "freja", id: "freja-session-1",
-		start: func(ctx context.Context, c *idkollen.IdkollenClient) (any, error) {
-			return c.Freja().Auth(ctx, idkollen.FrejaAuthRequest{})
+		start: func(ctx context.Context, c *identisure.IdentisureClient) (any, error) {
+			return c.Freja().Auth(ctx, identisure.FrejaAuthRequest{})
 		},
-		wait: func(ctx context.Context, c *idkollen.IdkollenClient, id string) (any, error) {
+		wait: func(ctx context.Context, c *identisure.IdentisureClient, id string) (any, error) {
 			return c.Freja().WaitForAuth(ctx, id, fastPoll)
 		},
 	},
 	{
 		provider: "mitid", path: "mitid", id: "mitid-session-1",
-		start: func(ctx context.Context, c *idkollen.IdkollenClient) (any, error) {
-			return c.MitId().Auth(ctx, idkollen.MitIdAuthRequest{})
+		start: func(ctx context.Context, c *identisure.IdentisureClient) (any, error) {
+			return c.MitId().Auth(ctx, identisure.MitIdAuthRequest{})
 		},
-		wait: func(ctx context.Context, c *idkollen.IdkollenClient, id string) (any, error) {
+		wait: func(ctx context.Context, c *identisure.IdentisureClient, id string) (any, error) {
 			return c.MitId().WaitForAuth(ctx, id, fastPoll)
 		},
 	},
 	{
 		provider: "ftn", path: "ftn", id: "ftn-session-1",
-		start: func(ctx context.Context, c *idkollen.IdkollenClient) (any, error) {
-			return c.Ftn().Auth(ctx, idkollen.FtnAuthRequest{})
+		start: func(ctx context.Context, c *identisure.IdentisureClient) (any, error) {
+			return c.Ftn().Auth(ctx, identisure.FtnAuthRequest{})
 		},
-		wait: func(ctx context.Context, c *idkollen.IdkollenClient, id string) (any, error) {
+		wait: func(ctx context.Context, c *identisure.IdentisureClient, id string) (any, error) {
 			return c.Ftn().WaitForAuth(ctx, id, fastPoll)
 		},
 	},
 	{
 		provider: "vipps", path: "vipps", id: "vipps-session-1",
-		start: func(ctx context.Context, c *idkollen.IdkollenClient) (any, error) {
-			return c.Vipps().Auth(ctx, idkollen.VippsAuthRequest{})
+		start: func(ctx context.Context, c *identisure.IdentisureClient) (any, error) {
+			return c.Vipps().Auth(ctx, identisure.VippsAuthRequest{})
 		},
-		wait: func(ctx context.Context, c *idkollen.IdkollenClient, id string) (any, error) {
+		wait: func(ctx context.Context, c *identisure.IdentisureClient, id string) (any, error) {
 			return c.Vipps().WaitForAuth(ctx, id, fastPoll)
 		},
 	},
@@ -260,7 +260,7 @@ func TestE2EAuth(t *testing.T) {
 
 					switch outcome.want {
 					case "UnknownStatus":
-						u, isUnknown := result.(*idkollen.UnknownStatus)
+						u, isUnknown := result.(*identisure.UnknownStatus)
 						if !isUnknown {
 							t.Fatalf("expected *UnknownStatus, got %T", result)
 						}
@@ -283,37 +283,37 @@ func TestE2ESign(t *testing.T) {
 	flows := []authFlow{
 		{
 			provider: "bankid_se", path: "bankid-se",
-			start: func(ctx context.Context, c *idkollen.IdkollenClient) (any, error) {
-				return c.BankIdSe().Sign(ctx, idkollen.BankIdSeSignRequest{})
+			start: func(ctx context.Context, c *identisure.IdentisureClient) (any, error) {
+				return c.BankIdSe().Sign(ctx, identisure.BankIdSeSignRequest{})
 			},
-			wait: func(ctx context.Context, c *idkollen.IdkollenClient, id string) (any, error) {
+			wait: func(ctx context.Context, c *identisure.IdentisureClient, id string) (any, error) {
 				return c.BankIdSe().WaitForSign(ctx, id, fastPoll)
 			},
 		},
 		{
 			provider: "bankid_no", path: "bankid-no",
-			start: func(ctx context.Context, c *idkollen.IdkollenClient) (any, error) {
-				return c.BankIdNo().Sign(ctx, idkollen.BankIdNoSignRequest{})
+			start: func(ctx context.Context, c *identisure.IdentisureClient) (any, error) {
+				return c.BankIdNo().Sign(ctx, identisure.BankIdNoSignRequest{})
 			},
-			wait: func(ctx context.Context, c *idkollen.IdkollenClient, id string) (any, error) {
+			wait: func(ctx context.Context, c *identisure.IdentisureClient, id string) (any, error) {
 				return c.BankIdNo().WaitForSign(ctx, id, fastPoll)
 			},
 		},
 		{
 			provider: "freja", path: "freja",
-			start: func(ctx context.Context, c *idkollen.IdkollenClient) (any, error) {
-				return c.Freja().Sign(ctx, idkollen.FrejaSignRequest{})
+			start: func(ctx context.Context, c *identisure.IdentisureClient) (any, error) {
+				return c.Freja().Sign(ctx, identisure.FrejaSignRequest{})
 			},
-			wait: func(ctx context.Context, c *idkollen.IdkollenClient, id string) (any, error) {
+			wait: func(ctx context.Context, c *identisure.IdentisureClient, id string) (any, error) {
 				return c.Freja().WaitForSign(ctx, id, fastPoll)
 			},
 		},
 		{
 			provider: "mitid", path: "mitid",
-			start: func(ctx context.Context, c *idkollen.IdkollenClient) (any, error) {
-				return c.MitId().Sign(ctx, idkollen.MitIdSignRequest{})
+			start: func(ctx context.Context, c *identisure.IdentisureClient) (any, error) {
+				return c.MitId().Sign(ctx, identisure.MitIdSignRequest{})
 			},
-			wait: func(ctx context.Context, c *idkollen.IdkollenClient, id string) (any, error) {
+			wait: func(ctx context.Context, c *identisure.IdentisureClient, id string) (any, error) {
 				return c.MitId().WaitForSign(ctx, id, fastPoll)
 			},
 		},
@@ -354,11 +354,11 @@ func TestE2EBankIdSePhoneAuth(t *testing.T) {
 	c := fs.client()
 	ctx := context.Background()
 
-	status, err := c.BankIdSe().PhoneAuth(ctx, idkollen.BankIdSePhoneAuthRequest{})
+	status, err := c.BankIdSe().PhoneAuth(ctx, identisure.BankIdSePhoneAuthRequest{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	pending, isPending := status.(*idkollen.BankIdSePendingPhone)
+	pending, isPending := status.(*identisure.BankIdSePendingPhone)
 	if !isPending {
 		t.Fatalf("expected *BankIdSePendingPhone, got %T", status)
 	}
@@ -368,7 +368,7 @@ func TestE2EBankIdSePhoneAuth(t *testing.T) {
 	}
 
 	fs.assertRequests(post("/v3/bankid-se/phone/auth"), get("/v3/bankid-se/auth/"+pending.Id))
-	if _, isCompleted := result.(*idkollen.BankIdSeCompleted); !isCompleted {
+	if _, isCompleted := result.(*identisure.BankIdSeCompleted); !isCompleted {
 		t.Fatalf("expected *BankIdSeCompleted, got %T", result)
 	}
 	assertMatchesFixture(t, result, "bankid_se/auth_completed.json")
@@ -377,7 +377,7 @@ func TestE2EBankIdSePhoneAuth(t *testing.T) {
 func TestE2EBankIdSeVerify(t *testing.T) {
 	fs := newFixtureServer(t, ok("bankid_se/verify.json"))
 
-	res, err := fs.client().BankIdSe().Verify(context.Background(), idkollen.BankIdSeVerifyRequest{QrCode: "qr"})
+	res, err := fs.client().BankIdSe().Verify(context.Background(), identisure.BankIdSeVerifyRequest{QrCode: "qr"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -389,22 +389,22 @@ func TestE2EBankIdSeVerify(t *testing.T) {
 func TestE2EAgeVerification(t *testing.T) {
 	for _, outcome := range []struct {
 		fixture string
-		check   func(t *testing.T, status idkollen.AgeVerificationStatus)
+		check   func(t *testing.T, status identisure.AgeVerificationStatus)
 	}{
-		{"completed.json", func(t *testing.T, status idkollen.AgeVerificationStatus) {
-			if _, isCompleted := status.(*idkollen.AgeVerificationCompleted); !isCompleted {
+		{"completed.json", func(t *testing.T, status identisure.AgeVerificationStatus) {
+			if _, isCompleted := status.(*identisure.AgeVerificationCompleted); !isCompleted {
 				t.Fatalf("expected *AgeVerificationCompleted, got %T", status)
 			}
 			assertMatchesFixture(t, status, "age_verification/completed.json")
 		}},
-		{"failed.json", func(t *testing.T, status idkollen.AgeVerificationStatus) {
-			if _, isFailed := status.(*idkollen.AgeVerificationFailed); !isFailed {
+		{"failed.json", func(t *testing.T, status identisure.AgeVerificationStatus) {
+			if _, isFailed := status.(*identisure.AgeVerificationFailed); !isFailed {
 				t.Fatalf("expected *AgeVerificationFailed, got %T", status)
 			}
 			assertMatchesFixture(t, status, "age_verification/failed.json")
 		}},
-		{"unknown.json", func(t *testing.T, status idkollen.AgeVerificationStatus) {
-			u, isUnknown := status.(*idkollen.UnknownStatus)
+		{"unknown.json", func(t *testing.T, status identisure.AgeVerificationStatus) {
+			u, isUnknown := status.(*identisure.UnknownStatus)
 			if !isUnknown {
 				t.Fatalf("expected *UnknownStatus, got %T", status)
 			}
@@ -422,11 +422,11 @@ func TestE2EAgeVerification(t *testing.T) {
 			c := fs.client()
 			ctx := context.Background()
 
-			status, err := c.BankIdSe().AgeVerification(ctx, idkollen.AgeVerificationRequest{})
+			status, err := c.BankIdSe().AgeVerification(ctx, identisure.AgeVerificationRequest{})
 			if err != nil {
 				t.Fatal(err)
 			}
-			pending, isPending := status.(*idkollen.AgeVerificationPending)
+			pending, isPending := status.(*identisure.AgeVerificationPending)
 			if !isPending {
 				t.Fatalf("expected *AgeVerificationPending, got %T", status)
 			}
@@ -459,11 +459,11 @@ func TestE2EDocumentUpload(t *testing.T) {
 func TestE2EErrorResponse(t *testing.T) {
 	fs := newFixtureServer(t, mockResponse{http.StatusBadRequest, "error.json"})
 
-	_, err := fs.client().Ftn().Auth(context.Background(), idkollen.FtnAuthRequest{})
+	_, err := fs.client().Ftn().Auth(context.Background(), identisure.FtnAuthRequest{})
 
-	var apiErr *idkollen.IdkollenError
+	var apiErr *identisure.IdentisureError
 	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected *IdkollenError, got %v", err)
+		t.Fatalf("expected *IdentisureError, got %v", err)
 	}
 	if apiErr.StatusCode != http.StatusBadRequest {
 		t.Errorf("expected status 400, got %d", apiErr.StatusCode)

@@ -1,4 +1,4 @@
-package idkollen
+package identisure
 
 import (
 	"crypto/hmac"

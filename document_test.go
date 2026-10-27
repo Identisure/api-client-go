@@ -1,4 +1,4 @@
-package idkollen_test
+package identisure_test
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	idkollen "github.com/idkollen/idk-clients/go/idkollen"
+	identisure "github.com/identisure/idk-clients/go/identisure"
 )
 
 func TestDocumentUpload(t *testing.T) {
@@ -23,7 +23,7 @@ func TestDocumentUpload(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
 	resp, err := c.Document().Upload(context.Background(), []byte("PDF content"), "test.pdf", "application/pdf")
 	if err != nil {
 		t.Fatal(err)
@@ -46,7 +46,7 @@ func TestDocumentDownload(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
 	data, err := c.Document().Download(context.Background(), "doc1")
 	if err != nil {
 		t.Fatal(err)

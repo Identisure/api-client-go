@@ -1,4 +1,4 @@
-package idkollen_test
+package identisure_test
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	idkollen "github.com/idkollen/idk-clients/go/idkollen"
+	identisure "github.com/identisure/idk-clients/go/identisure"
 )
 
 func TestVippsAuth_Pending(t *testing.T) {
@@ -18,12 +18,12 @@ func TestVippsAuth_Pending(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.Vipps().Auth(context.Background(), idkollen.VippsAuthRequest{})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.Vipps().Auth(context.Background(), identisure.VippsAuthRequest{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	p, ok := status.(*idkollen.VippsPending)
+	p, ok := status.(*identisure.VippsPending)
 	if !ok {
 		t.Fatalf("expected *VippsPending, got %T", status)
 	}
@@ -41,8 +41,8 @@ func TestVippsBackchannelAuth(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	_, err := c.Vipps().BackchannelAuth(context.Background(), idkollen.VippsBackchannelAuthRequest{Phone: "+4712345678"})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	_, err := c.Vipps().BackchannelAuth(context.Background(), identisure.VippsBackchannelAuthRequest{Phone: "+4712345678"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -54,12 +54,12 @@ func TestVippsAuthStatus_Unknown(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
 	status, err := c.Vipps().AuthStatus(context.Background(), "vp1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	u, ok := status.(*idkollen.UnknownStatus)
+	u, ok := status.(*identisure.UnknownStatus)
 	if !ok {
 		t.Fatalf("expected *UnknownStatus, got %T", status)
 	}

@@ -1,4 +1,4 @@
-package idkollen_test
+package identisure_test
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	idkollen "github.com/idkollen/idk-clients/go/idkollen"
+	identisure "github.com/identisure/idk-clients/go/identisure"
 )
 
 func TestBankIdSeAuth_Pending(t *testing.T) {
@@ -19,12 +19,12 @@ func TestBankIdSeAuth_Pending(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.BankIdSe().Auth(context.Background(), idkollen.BankIdSeAuthRequest{})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.BankIdSe().Auth(context.Background(), identisure.BankIdSeAuthRequest{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	p, ok := status.(*idkollen.BankIdSePending)
+	p, ok := status.(*identisure.BankIdSePending)
 	if !ok {
 		t.Fatalf("expected *BankIdSePending, got %T", status)
 	}
@@ -39,12 +39,12 @@ func TestBankIdSeAuth_Completed(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.BankIdSe().Auth(context.Background(), idkollen.BankIdSeAuthRequest{})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.BankIdSe().Auth(context.Background(), identisure.BankIdSeAuthRequest{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	comp, ok := status.(*idkollen.BankIdSeCompleted)
+	comp, ok := status.(*identisure.BankIdSeCompleted)
 	if !ok {
 		t.Fatalf("expected *BankIdSeCompleted, got %T", status)
 	}
@@ -62,12 +62,12 @@ func TestBankIdSePhoneAuth_PendingPhone(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.BankIdSe().PhoneAuth(context.Background(), idkollen.BankIdSePhoneAuthRequest{Ssn: "190001011234", CallInitiator: "USER"})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.BankIdSe().PhoneAuth(context.Background(), identisure.BankIdSePhoneAuthRequest{Ssn: "190001011234", CallInitiator: "USER"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	p, ok := status.(*idkollen.BankIdSePendingPhone)
+	p, ok := status.(*identisure.BankIdSePendingPhone)
 	if !ok {
 		t.Fatalf("expected *BankIdSePendingPhone, got %T", status)
 	}
@@ -87,8 +87,8 @@ func TestBankIdSeVerify(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	resp, err := c.BankIdSe().Verify(context.Background(), idkollen.BankIdSeVerifyRequest{QrCode: "qrdata"})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	resp, err := c.BankIdSe().Verify(context.Background(), identisure.BankIdSeVerifyRequest{QrCode: "qrdata"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -106,7 +106,7 @@ func TestBankIdSeCancelAuth(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
 	if err := c.BankIdSe().CancelAuth(context.Background(), "abc"); err != nil {
 		t.Fatal(err)
 	}
@@ -118,12 +118,12 @@ func TestBankIdSeWaitForAuth_CompletesImmediately(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := idkollen.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
-	status, err := c.BankIdSe().WaitForAuth(context.Background(), "abc", idkollen.PollOptions{})
+	c := identisure.NewClientBuilder("id", "secret").BaseURL(srv.URL).Build()
+	status, err := c.BankIdSe().WaitForAuth(context.Background(), "abc", identisure.PollOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, ok := status.(*idkollen.BankIdSeCompleted); !ok {
+	if _, ok := status.(*identisure.BankIdSeCompleted); !ok {
 		t.Fatalf("expected *BankIdSeCompleted, got %T", status)
 	}
 }
