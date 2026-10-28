@@ -12,6 +12,8 @@
 
 API client for the [Identisure](https://developers.identisure.com) REST API.
 
+Documentation: [pkg.go.dev/github.com/identisure/api-client-go](https://pkg.go.dev/github.com/identisure/api-client-go)
+
 ## Requirements
 
 Go 1.21 or later.
